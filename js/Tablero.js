@@ -1,6 +1,11 @@
 class Tablero {
     constructor(filas, columnas, tamañoCuadrado, ctx) {
-         // inicializa el tablero todos los elementos de color WHITE		
+         // inicializa el tablero todos los elementos de color WHITE
+        this.fila = filas;
+        this.columna = columnas;
+        this.TC = tamañoCuadrado;
+        this.ctx = ctx;
+        this.tablero = [];
     }
 
     // Es vacio si tiene el color WHITE
@@ -15,15 +20,30 @@ class Tablero {
     }
 
     // dibujar en el canvas según los colores del tablaro
-    dibujarTablero = () => {};
+    dibujarTablero = () => {
 
-    get filas() {}
+        for (var i=0;i<this.fila;i++){
+            this.tablero[i] = [];
+            for (var j=0;j<this.columna;j++){
+                this.tablero[i][j] = "WHITE";
+            }
+        }
 
-    set filas(fila) {}
+        for (var i=0;i<this.fila;i++){
+            for (var j=0;j<this.columna;j++){
+                this.dibujarCasilla(j,i,this.tablero[i][j]);
+            }
+        }
 
-    get columnas() {}
+    };
 
-    set columnas(columna) {}
+    get filas() { return this.filas }
+
+    set filas(fila) { this.filas = fila}
+
+    get columnas() { return this.columnas }
+
+    set columnas(columna) { this.columnas = columna}
 
     //Devuelve el color del tablero en la casilla indicada
     getCasilla = (f, c) => {

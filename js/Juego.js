@@ -12,7 +12,8 @@ class Juego {
 
     // devuelve una pieza aleatoria
     piezaAleatoria = () => {
-
+        let piezaR=Math.floor(Math.random()*PIEZAS.length);
+        return new Pieza (PIEZAS[piezaR][0],PIEZAS[piezaR][1]);
     }
 
     get tablero() {

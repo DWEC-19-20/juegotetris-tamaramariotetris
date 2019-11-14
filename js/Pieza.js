@@ -13,7 +13,10 @@ const PIEZAS = [
 class Pieza {
 
     constructor(tetromino, color, tablero) {
-        // propiedades numeroForma, tetrominioActual, posición x e y en el canvas  	
+        // propiedades numeroForma, tetrominioActual, posición x e y en el canvas 
+        this.tetromino = tetromino;
+        this.color = color;
+        this.tablero = tablero;
     }
 
     // rota la piezaentre las distintas formas del tetrominio
