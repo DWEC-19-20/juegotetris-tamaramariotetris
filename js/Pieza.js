@@ -17,6 +17,10 @@ class Pieza {
         this.tetromino = tetromino;
         this.color = color;
         this.tablero = tablero;
+        this.x=-4;
+        this.y=4;
+        this.n=0;
+        this.activeTetromino=this.tetromino[this.n];
     }
 
     // rota la piezaentre las distintas formas del tetrominio
@@ -25,16 +29,29 @@ class Pieza {
 
 
     // rellena el tetromino de la pieza con su color en el canvas
-    rellenar = (color) => {}
+    rellenar = (color) => {
+        
+        for (var i=0;i<this.activeTetromino.length;i++){
+            for (var j=0;j<this.activeTetromino.length;j++){
+                if(this.activeTetromino[i][j]){
+                    this.tablero.dibujarCasilla(this.y+i,this.x+j,color);
+                }
+            }
+        }
+    }
 
     // dibuja el color de una pieza
-    dibujar = () => {}
-
+    dibujar = () => {this.rellenar(this.color);}
+            
     // borra una pieza rellenandola de casillas blancas
-    borrar = () => {}
+    borrar = () => {this.rellenar("white")}
 
     // mover abajo la pieza, si queda fijada, deberá obtener una nueva
-    moverAbajo = () => {}
+    moverAbajo = () => {
+        this.borrar();
+        this.x++;
+        this.dibujar();
+    }
 
     // mover derecha la pieza hasta chocar con la pared 
     moverDerecha = () => {}
