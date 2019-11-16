@@ -54,17 +54,37 @@ class Pieza {
     }
 
     // mover derecha la pieza hasta chocar con la pared 
-    moverDerecha = () => {}
+    moverDerecha = () => {
+        this.borrar();
+        this.y++;
+        this.dibujar();
+    }
 
     // mover izquierda la pieza hasta chocar con la pared 
-    moverIzquierda = () => {}
+    moverIzquierda = () => {
+        if (this.colision(this.x,this.y--,this.activeTetromino)){
+            this.borrar();
+            this.y--;
+            this.dibujar();
+        }
+    }
 
     // fijar pieza cuando choca con el suelo u otra pieza
     // hay que comprobar si se ha formado una o varias lineas para borrarlas 
     fijar = () => {}
 
     // Comprueba si se produce una colisión de una pieza con el suelo u otra pieza 
-    colision = (x, y, pieza) => {}
+    colision = (x, y, pieza) => {
+        for (var i=0;i<pieza.length;i++){
+            for (var j=0;j<pieza.length;j++){
+                if(!pieza[i][j]){
+                    if (x < 0 || x >= j || y >= i){
+                        return true;
+                    }
+                }
+            }
+        }
+    }
 
 
 
