@@ -17,15 +17,25 @@ class Pieza {
         this.tetromino = tetromino;
         this.color = color;
         this.tablero = tablero;
-        this.x=-4;
-        this.y=4;
+        this.x=-3;
+        this.y=Math.floor(Math.random()*7);
         this.n=0;
         this.activeTetromino=this.tetromino[this.n];
     }
 
     // rota la piezaentre las distintas formas del tetrominio
     // de debe controlar que si está muy cerca de las paredes algunas no pueden girar
-    rotar = () => {}
+    rotar = () => {
+
+        this.n++;
+        if (this.n==this.tetromino.length){
+            this.n=0;
+        }
+        this.borrar();
+        this.activeTetromino=this.tetromino[this.n];
+        this.dibujar();
+        caer();
+    }
 
 
     // rellena el tetromino de la pieza con su color en el canvas
@@ -58,15 +68,15 @@ class Pieza {
         this.borrar();
         this.y++;
         this.dibujar();
+        caer();
     }
 
     // mover izquierda la pieza hasta chocar con la pared 
     moverIzquierda = () => {
-        if (this.colision(this.x,this.y--,this.activeTetromino)){
-            this.borrar();
-            this.y--;
-            this.dibujar();
-        }
+        this.borrar();
+        this.y--;
+        this.dibujar();
+        caer();
     }
 
     // fijar pieza cuando choca con el suelo u otra pieza
@@ -74,18 +84,6 @@ class Pieza {
     fijar = () => {}
 
     // Comprueba si se produce una colisión de una pieza con el suelo u otra pieza 
-    colision = (x, y, pieza) => {
-        for (var i=0;i<pieza.length;i++){
-            for (var j=0;j<pieza.length;j++){
-                if(!pieza[i][j]){
-                    if (x < 0 || x >= j || y >= i){
-                        return true;
-                    }
-                }
-            }
-        }
-    }
-
-
+    colision = (x, y, pieza) => {}
 
 }
