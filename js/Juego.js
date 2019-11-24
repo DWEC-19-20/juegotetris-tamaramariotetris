@@ -12,8 +12,8 @@ class Juego {
 
     // devuelve una pieza aleatoria
     piezaAleatoria = () => {
-        let piezaR=Math.floor(Math.random()*PIEZAS.length);
-        return new Pieza (PIEZAS[piezaR][0],PIEZAS[piezaR][1],this.tablero);
+        var piezaR = Math.floor(Math.random() * PIEZAS.length);
+        return new Pieza(PIEZAS[piezaR][0], PIEZAS[piezaR][1], this._tablero);
     }
 
     get tablero() {
@@ -23,7 +23,6 @@ class Juego {
     get pieza() {
         return this._pieza;
     }
-
     set pieza(pieza) {
         this._pieza = pieza;
     }
@@ -34,6 +33,7 @@ class Juego {
     set comenzarCaer(comenzarCaer) {
         this._comenzarCaer = comenzarCaer;
     }
+
     caer = () => {
         let ahora = Date.now();
         let delta = ahora - this.comenzarCaer;

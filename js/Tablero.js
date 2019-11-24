@@ -1,15 +1,27 @@
 class Tablero {
     constructor(filas, columnas, tamañoCuadrado, ctx) {
-         // inicializa el tablero todos los elementos de color WHITE
-        this.fila = filas;
-        this.columna = columnas;
+        // inicializa el tablero todos los elementos de color WHITE
+        this._filas = filas;
+        this._columnas = columnas;
         this.TC = tamañoCuadrado;
         this.ctx = ctx;
         this.tablero = [];
+        for (var f = 0; f < this._filas; f++) {
+            this.tablero[f] = [];
+            for (var c = 0; c < this._columnas; c++) {
+                this.tablero[f][c] = "WHITE";
+            }
+        }
     }
 
     // Es vacio si tiene el color WHITE
-    esVacio = (x, y) => {}
+    esVacio = (x, y) => {
+        if (this.tablero[y][x] == "WHITE") {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     // Dibuja un en el canvas del color recibido
     dibujarCasilla = (x, y, color) => {
@@ -21,29 +33,21 @@ class Tablero {
 
     // dibujar en el canvas según los colores del tablaro
     dibujarTablero = () => {
-
-        for (var i=0;i<this.fila;i++){
-            this.tablero[i] = [];
-            for (var j=0;j<this.columna;j++){
-                this.tablero[i][j] = "WHITE";
-            }
-        }
-
-        for (var i=0;i<this.fila;i++){
-            for (var j=0;j<this.columna;j++){
-                this.dibujarCasilla(j,i,this.tablero[i][j]);
+        for (var f = 0; f < this._filas; f++) {
+            for (var c = 0; c < this._columnas; c++) {
+                this.dibujarCasilla(c, f, this.tablero[f][c]);
             }
         }
 
     };
 
-    get filas() { return this.filas }
+    /*get filas() { return this._filas }
 
-    set filas(fila) { this.filas = fila}
+    set filas(fila) { this._filas = fila }
 
-    get columnas() { return this.columnas }
+    get columnas() { return this._columnas }
 
-    set columnas(columna) { this.columnas = columna}
+    set columnas(columna) { this._columnas = columna }*/
 
     //Devuelve el color del tablero en la casilla indicada
     getCasilla = (f, c) => {
