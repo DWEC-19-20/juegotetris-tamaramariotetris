@@ -1,65 +1,67 @@
+const VACANT = "white";
+
 class Tablero {
     constructor(filas, columnas, tamañoCuadrado, ctx) {
-        // inicializa el tablero todos los elementos de color WHITE
-        this._filas = filas;
-        this._columnas = columnas;
+        this.F = filas;
+        this.C = columnas;
         this.TC = tamañoCuadrado;
-        this.ctx = ctx;
-        this.tablero = [];
-        for (var f = 0; f < this._filas; f++) {
-            this.tablero[f] = [];
-            for (var c = 0; c < this._columnas; c++) {
-                this.tablero[f][c] = "WHITE";
+        this.CX = ctx;
+        this._board = [];
+        // inicializa el tablero todos los elementos de color WHITE
+        for (var r = 0; r < this.F; r++) {
+            this._board[r] = [];
+            for (var c = 0; c < this.C; c++) {
+                this._board[r][c] = VACANT;
             }
         }
     }
 
-    // Es vacio si tiene el color WHITE
-    esVacio = (x, y) => {
-        if (this.tablero[y][x] == "WHITE") {
-            return true;
-        } else {
-            return false;
-        }
+    // Dibuja una casilla en el canvas del color recibido
+    dibujarCasilla = (x, y, color) => { //y fila, x columna
+        this.CX.fillStyle = color;
+        this.CX.fillRect(x * this.TC, y * this.TC, this.TC, this.TC);
+        this.CX.strokeStyle = "BLACK";
+        this.CX.strokeRect(x * this.TC, y * this.TC, this.TC, this.TC);
     }
 
-    // Dibuja un en el canvas del color recibido
-    dibujarCasilla = (x, y, color) => {
-        this.ctx.fillStyle = color;
-        this.ctx.fillRect(x * this.TC, y * this.TC, this.TC, this.TC);
-        this.ctx.strokeStyle = "BLACK";
-        this.ctx.strokeRect(x * this.TC, y * this.TC, this.TC, this.TC);
-    }
-
-    // dibujar en el canvas según los colores del tablaro
+    // dibujar en el canvas según los colores del tablero
     dibujarTablero = () => {
-        for (var f = 0; f < this._filas; f++) {
-            for (var c = 0; c < this._columnas; c++) {
-                this.dibujarCasilla(c, f, this.tablero[f][c]);
+        for (var r = 0; r < this.F; r++) {
+            for (var c = 0; c < this.C; c++) {
+                this.dibujarCasilla(c, r, this._board[r][c]); //Le pasa columna, fila y color
             }
         }
-
     };
 
-    /*get filas() { return this._filas }
+    get filas() {
+        return this.F;
+    }
+    set filas(fila) {
+        this.F = fila;
+    }
 
-    set filas(fila) { this._filas = fila }
+    get columnas() {
+        return this.C;
+    }
+    set columnas(columna) {
+        this.C = columna;
+    }
 
-    get columnas() { return this._columnas }
-
-    set columnas(columna) { this._columnas = columna }*/
+    get board() {
+        return this._board;
+    }
+    set board(board) {
+        this._board = board;
+    }
 
     //Devuelve el color del tablero en la casilla indicada
     getCasilla = (f, c) => {
-
+        return this._board[f][c];
     }
 
     //Cambiar el color del tablero en la casilla indicada
     setCasilla = (f, c, color) => {
-
+        this._board[f][c] = color;
     }
-
-    // Eliminamos las filas que estén completas e incrementamos la puntuación
-    eliminarFilasCompletas = () => {}
 
 }
