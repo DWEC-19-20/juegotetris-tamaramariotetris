@@ -12,236 +12,168 @@ const PIEZAS = [
 // La clase pieza
 class Pieza {
 
-    constructor(tetromino, color, tablero, tableroNext) {
+    constructor(tetromino, color, tablero, juego) { //paso juego para poder acceder y modificar los valores del juego
         // propiedades numeroForma, tetrominioActual, posición x e y en el canvas
         this._tetromino = tetromino;
-        this.tetrominoN = 0; 
-        this.tetrominioActual = this._tetromino[this.tetrominoN];
         this._color = color;
         this._tablero = tablero;
-        this._tableroNext = tableroNext; 
         this._x = 3;
-        if (this._color == "grey") { 
-            this._y = -3;
-        } else {
-            this._y = -2;
-        }
+        this._y = -3;
+        this.n = 0;
+        this.activeTetromino = this._tetromino[this.n];
+        this._juego = juego;
     }
 
     // rota la piezaentre las distintas formas del tetrominio
-    // de debe controlar que si está muy cerca de las paredes algunas no pueden girar
+    // se debe controlar que si está muy cerca de las paredes algunas no pueden girar
     rotar = () => {
-        this.tetrominoN = (this.tetrominoN + 1) % this._tetromino.length;
-        var newTetromino = this._tetromino[this.tetrominoN];
-        //Patada, no va bien...
-        /*if(this.colision(this._x, this._y, newTetromino)){
-            if(this._x > (this._tablero.C/2)){
-                this.borrar();
-                if(this._color == "red"){
-                    this._x += 2;
-                }else{
+        this.n = (this.n + 1) % this._tetromino.length;
+        //Patada
+        if(this.colision(0, 0, this._tetromino[this.n])){
+            if(this._x > (this._tablero.columnas/2)){
+                if (!this.colision(-1, 0, this._tetromino[this.n])) {
+                    this.borrar();
                     this._x--;
+                    this.activeTetromino = this._tetromino[this.n];
+                    this.dibujar();
+                    this.errorAPosta();
+                }
+                else{
+                    this.errorAPosta();//es para que continue bajando
                 }
             }
-            if(this._x < (this._tablero.C/2)){
-                this.borrar();
-                if(this._color == "red"){
-                    this._x += 2;
-                }else{
+            if(this._x < (this._tablero.columnas/2)){
+                if (!this.colision(1, 0, this._tetromino[this.n])) {
+                    this.borrar();
                     this._x++;
+                    this.activeTetromino = this._tetromino[this.n];
+                    this.dibujar();
+                    this.errorAPosta();
+                }
+                else{
+                    this.errorAPosta();//es para que continue bajando
+                }
+
+            }
+        }
+        if (!this.colision(0, 0, this._tetromino[this.n])) {
+            this.borrar();
+            this.activeTetromino = this._tetromino[this.n];
+            this.dibujar();
+            this.errorAPosta();
+        }
+        else{
+            this.errorAPosta();//es para que continue bajando
+        }
+    }
+
+
+    // rellena el tetromino de la pieza con su color en el canvas
+    rellenar = (color) => {
+        for (var f = 0; f < this.activeTetromino.length; f++) {
+            for (var c = 0; c < this.activeTetromino.length; c++) {
+                if (this.activeTetromino[f][c]) {
+                    this._tablero.dibujarCasilla(this._x + c, this._y + f, color);
                 }
             }
-        }*/
-        if (!this.colision(this._x, this._y, newTetromino)) {
-            this.borrar();
-            this.tetrominioActual = newTetromino;
-            this.dibujar();
-            errorAposta();
         }
     }
 
     // dibuja el color de una pieza
-    dibujar = () => {
-        for (var r = 0; r < this.tetrominioActual.length; r++) {
-            for (var c = 0; c < this.tetrominioActual.length; c++) {
-                if (this.tetrominioActual[r][c]) {
-                    this._tablero.dibujarCasilla(this._x + c, this._y + r, this._color);
-                }
-            }
-        }
-    }
-
-    // dibuja el color de la siguiente pieza en el tablero de la siguiente pieza
-    dibujarNext = () => {
-        var y = 0;
-        if (this._color != "grey") {
-            y = 1;
-        }
-        for (var r = 0; r < this.tetrominioActual.length; r++) {
-            for (var c = 0; c < this.tetrominioActual.length; c++) {
-                if (this.tetrominioActual[r][c]) {
-                    this._tableroNext.dibujarCasilla(c, r + y, this._color);
-                }
-            }
-        }
-    }
+    dibujar = () => { this.rellenar(this._color); }
 
     // borra una pieza rellenandola de casillas blancas
-    borrar = () => {
-        for (var r = 0; r < this.tetrominioActual.length; r++) {
-            for (var c = 0; c < this.tetrominioActual.length; c++) {
-                if (this.tetrominioActual[r][c]) {
-                    this._tablero.dibujarCasilla(this._x + c, this._y + r, VACANT);
-                }
-            }
-        }
-    }
-
-    // borra el tablero de la siguiente pieza
-    borraTableroNext = () => {
-        for (var r = 0; r < this._tableroNext.filas; r++) {
-            for (var c = 0; c < this._tableroNext.columnas; c++) {
-                this._tableroNext.dibujarCasilla(c, r, VACANT);
-            }
-        }
-    }
+    borrar = () => { this.rellenar("WHITE"); }
 
     // mover abajo la pieza, si queda fijada, deberá obtener una nueva
     moverAbajo = () => {
-        var newY = this._y;
-        newY++; 
-        if (!this.colision(this._x, newY, this.tetrominioActual)) {
+        if (!this.colision(0, 1, this.activeTetromino)) {
             this.borrar();
             this._y++;
             this.dibujar();
         } else {
             this.fijar();
-            juego.pieza = juego.nextPieza; 
-            juego.nextPieza = juego.piezaAleatoria(); 
+            //Creo la nueva pieza con algunas de las propiedades de la pieza siguiente y con el tablero de la pieza actual
+            this._juego.pieza = new Pieza(this._juego.piezaSiguiente._tetromino, this._juego.piezaSiguiente._color, this._juego.pieza._tablero, this._juego.piezaSiguiente._juego);
+            this._juego.piezaSiguiente = this._juego.piezaAleatoria(this._juego._tableroNext); //Creo la pieza siguente
         }
     }
 
     // mover derecha la pieza hasta chocar con la pared
     moverDerecha = () => {
-        var newX = this._x;
-        newX++;
-        if (!this.colision(newX, this._y, this.tetrominioActual)) {
+        if (!this.colision(1, 0, this.activeTetromino)) {
             this.borrar();
             this._x++;
             this.dibujar();
-            errorAposta();
+            this.errorAPosta();//es para que continue bajando
+        }
+        else{
+            this.errorAPosta();//es para que continue bajando
         }
     }
 
     // mover izquierda la pieza hasta chocar con la pared
     moverIzquierda = () => {
-        var newX = this._x;
-        newX--;
-        if (!this.colision(newX, this._y, this.tetrominioActual)) {
+        if (!this.colision(-1, 0, this.activeTetromino)) {
             this.borrar();
             this._x--;
             this.dibujar();
-            errorAposta();
+            this.errorAPosta();//es para que continue bajando
+        }
+        else{
+            this.errorAPosta();//es para que continue bajando
         }
     }
 
     // fijar pieza cuando choca con el suelo u otra pieza
     // hay que comprobar si se ha formado una o varias lineas para borrarlas
     fijar = () => {
-        for (var r = 0; r < this.tetrominioActual.length; r++) {
-            for (var c = 0; c < this.tetrominioActual.length; c++) {
-                if (!this.tetrominioActual[r][c]) {
+        for (var f = 0; f < this.activeTetromino.length; f++) {
+            for (var c = 0; c < this.activeTetromino.length; c++) {
+                if (!this.activeTetromino[f][c]) {
                     continue;
                 }
-                if (this._y + r < 0) {
-                    juego.gameOver = true;
-                    alert("Fin de juego");
+                if (this._y + f < 0) {
+                    this._juego.gameOver = true;
                     break;
                 }
-                this._tablero.board[this._y + r][this._x + c] = this._color;
+                this._tablero.setCasilla(this._y + f, this._x + c, this._color);
             }
         }
-        for (var r = 0; r < this._tablero.F; r++) {
-            let isRowFull = true;
-            for (var c = 0; c < this._tablero.C; c++) {
-                isRowFull = isRowFull && (this._tablero.board[r][c] != VACANT);
-            }
-            if (isRowFull) {
-                for (var y = r; y > 1; y--) {
-                    for (var c = 0; c < this._tablero.C; c++) {
-                        this._tablero.board[y][c] = this._tablero.board[y - 1][c];
-                        this._tablero.board[8][10] = this._tablero.board[7][10];
-                    }
-                }
-                for (var c = 0; c < this._tablero.C; c++) {
-                    this._tablero.board[0][c] = VACANT;
-                }
-
-                juego.score += 10;
-                sco.innerHTML = juego.score; //variable global que hace referenia al div de la puntuación
-                switch (true) {
-                    case juego.score >= 10 && juego.score < 20:
-                        juego.velocidad = 900;
-                        break;
-                    case juego.score >= 20 && juego.score < 30:
-                        juego.velocidad = 800;
-                        break;
-                    case juego.score >= 30 && juego.score < 40:
-                        juego.velocidad = 600;
-                        break;
-                    case juego.score >= 40 && juego.score < 50:
-                        juego.velocidad = 500;
-                        break;
-                    case juego.score >= 50 && juego.score < 60:
-                        juego.velocidad = 400;
-                        break;
-                    case juego.score >= 60 && juego.score < 70:
-                        juego.velocidad = 300;
-                        break;
-                    case juego.score >= 70 && juego.score < 80:
-                        juego.velocidad = 200;
-                        break;
-                    case juego.score >= 80 && juego.score < 90:
-                        juego.velocidad = 100;
-                        break;
-                    case juego.score >= 90 && juego.score < 100:
-                        juego.velocidad = 75;
-                        break;
-                    case juego.score >= 100:
-                        juego.velocidad = 50;
-                        break;
-                }
-            }
+        //Si se completan filas se aumenta la velocidad
+        if((this._tablero.eliminarFilasCompletas() - this._juego.lineas) > 0){
+            this._juego.velocidad = this._juego.velocidad - ((this._tablero.eliminarFilasCompletas() - this._juego.lineas)*50);
         }
+        this._juego.lineas = this._tablero.eliminarFilasCompletas();
         this._tablero.dibujarTablero();
     }
 
     // Comprueba si se produce una colisión de una pieza con el suelo u otra pieza
     colision = (x, y, pieza) => {
-        var nX; //Columna 
-        var nY; //Fila
-        for (var r = 0; r < pieza.length; r++) {
+        for (var f = 0; f < pieza.length; f++) {
             for (var c = 0; c < pieza.length; c++) {
-                if (pieza[r][c]) { 
-                    nX = x + c; 
-                    nY = y + r;
-                } else {
-                    nX = x;
-                    nY = y;
-                }
-                if (!pieza[r][c]) {
+                if (!pieza[f][c]) {
                     continue;
                 }
-                if (nX < 0 || nX >= this._tablero.C || nY >= this._tablero.F) { 
+
+                let nuevaX = this._x + c + x;
+                let nuevaY = this._y + f + y;
+
+                if (nuevaX < 0 || nuevaX >= this._tablero.columnas || nuevaY >= this._tablero.filas) { //Colisión con bordes
                     return true;
                 }
-                if (nY < 0) {
+                if (nuevaY < 0) {
                     continue;
                 }
-                if (this._tablero.board[nY][nX] != VACANT) {
+                if (!this._tablero.esVacio(nuevaX, nuevaY)) { //Colisión con pieza
                     return true;
                 }
             }
         }
+        return false;
+    }
+
+    errorAPosta(){
+        Sigue_bajando;
     }
 }
